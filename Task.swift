@@ -27,4 +27,6 @@ class Task: Object {
     override static func primaryKey() -> String? {
         return "id"
     }
+    @objc dynamic var category: String = ""
+    
 }

@@ -10,9 +10,11 @@ import UIKit
 import RealmSwift
 import UserNotifications
 
-class ViewController: UIViewController , UITableViewDelegate , UITableViewDataSource {
-
+class ViewController: UIViewController , UITableViewDelegate , UITableViewDataSource , UISearchBarDelegate {
+  
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     
     // Realmインスタンスを取得する
     let realm = try! Realm()
@@ -27,8 +29,8 @@ class ViewController: UIViewController , UITableViewDelegate , UITableViewDataSo
         // Do any additional setup after loading the view, typically from a nib.
         tableView.delegate = self
         tableView.dataSource = self
+        searchBar.delegate = self
     }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -38,7 +40,7 @@ class ViewController: UIViewController , UITableViewDelegate , UITableViewDataSo
     func tableView(_ tableView:UITableView, numberOfRowsInSection section:Int) -> Int{
         return taskArray.count
     }
-    
+ 
     // 各セルの内容を返すメソッド
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // 再利用可能な cell を得る
@@ -115,7 +117,13 @@ class ViewController: UIViewController , UITableViewDelegate , UITableViewDataSo
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
-
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        // NSPredicateを使って検索条件を指定します
+        let predicate = NSPredicate(format: "category = %@" ,searchText)
+        taskArray = realm.objects(Task.self).filter(predicate)
+        tableView.reloadData()
+    }
 }
 
 
